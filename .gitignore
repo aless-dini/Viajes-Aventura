@@ -221,3 +221,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Viajes Aventura: local databases, editors and OS files
+*.db
+*.sqlite3
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
