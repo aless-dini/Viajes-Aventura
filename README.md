@@ -43,14 +43,18 @@ Desde la carpeta del proyecto, con el entorno virtual activo:
 python -m unittest -v
 ```
 
-Resultado esperado: `Ran 6 tests` y `OK`. Las pruebas usan una base temporal, así que se pueden repetir las veces que se quiera. Comprueban que:
+Resultado esperado: `Ran 11 tests` y `OK`. Las pruebas usan una base temporal, así que se pueden repetir las veces que se quiera. Comprueban que:
 
 - la conexión se abre;
 - se crean las 5 tablas del modelo físico;
 - las claves foráneas están activas;
 - la base rechaza un costo inválido;
-- un valor malicioso se guarda como texto y no se ejecuta como SQL;
-- se rechaza un motor de base de datos no soportado.
+- un valor malicioso se guarda tal cual como texto y no se ejecuta como SQL;
+- el ataque `' OR '1'='1` en un filtro no encuentra ninguna fila;
+- los errores del motor se convierten en `DatabaseError` (las otras capas no dependen de `sqlite3`);
+- una base inaccesible muestra un error en vez de caerse;
+- se rechaza un motor de base de datos no soportado;
+- una ruta relativa en `SQLITE_PATH` se toma desde la carpeta del proyecto.
 
 Para crear la base real definida en `.env`:
 
