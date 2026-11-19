@@ -1,10 +1,3 @@
-"""Database connection. This is the only module that talks to the database engine.
-
-Engine-specific errors (sqlite3.Error) never leave this module: they are turned
-into DatabaseError or IntegrityViolation, so the other layers do not depend on
-the engine and keep working when MySQL is added (RNF04).
-"""
-
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
@@ -13,19 +6,10 @@ SCHEMA_SQLITE = Path(__file__).parent / "schema_sqlite.sql"
 
 
 class DatabaseError(Exception):
-    """Raised when the database cannot be used. Its message is shown to the user."""
-
 
 class IntegrityViolation(DatabaseError):
-    """Raised when data breaks a database rule (UNIQUE, CHECK or FOREIGN KEY).
-
-    The original engine error is kept in __cause__ for whoever needs the detail.
-    """
-
 
 class Database:
-    """Opens connections to the configured engine and creates the tables."""
-
     SUPPORTED_ENGINES = ("sqlite",)  # "mysql" is added in Hito 2
 
     def __init__(self, engine, sqlite_path):
@@ -37,7 +21,6 @@ class Database:
 
     @contextmanager
     def connect(self):
-        """Yield a connection; commit if everything worked, roll back if not."""
         connection = None
         try:
             connection = sqlite3.connect(self.sqlite_path)
@@ -65,7 +48,6 @@ class Database:
             connection.close()
 
     def init_schema(self):
-        """Create the tables if they do not exist yet."""
         try:
             script = SCHEMA_SQLITE.read_text(encoding="utf-8")
         except OSError as error:
@@ -74,7 +56,6 @@ class Database:
             connection.executescript(script)
 
     def list_tables(self):
-        """Return the names of the tables in the database."""
         query = (
             "SELECT name FROM sqlite_master "
             "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name"

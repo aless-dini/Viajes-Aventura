@@ -1,7 +1,3 @@
--- Physical model v1 for SQLite (Viajes Aventura)
--- Amounts are stored as whole Chilean pesos (INTEGER).
--- Dates are stored as ISO text: 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'.
-
 CREATE TABLE IF NOT EXISTS users (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     full_name       TEXT    NOT NULL,
@@ -34,8 +30,6 @@ CREATE TABLE IF NOT EXISTS packages (
     CHECK (available_slots BETWEEN 0 AND total_slots)
 );
 
--- Junction table: a package has many destinations and a destination
--- can belong to many packages (many-to-many).
 CREATE TABLE IF NOT EXISTS package_destinations (
     package_id     INTEGER NOT NULL,
     destination_id INTEGER NOT NULL,
