@@ -1,4 +1,4 @@
-# Requerimientos – Viajes Aventura (v1)
+# Requerimientos – Viajes Aventura (v2)
 
 Proyecto ES4 · TI3021 Programación Orientada a Objeto Seguro · Hito 1
 
@@ -13,18 +13,20 @@ Cada requerimiento tiene identificador, prioridad y criterio de aceptación (una
 | RF01 | Registrar cliente | El sistema debe permitir que una persona se registre como cliente con nombre completo, correo y contraseña. | Alta | Con datos válidos se crea la cuenta con rol cliente; si el correo ya existe se muestra "El correo ya está registrado". |
 | RF02 | Iniciar sesión | El sistema debe permitir que un usuario registrado ingrese con correo y contraseña. | Alta | Con datos correctos accede al menú de su rol; con datos incorrectos se muestra "Correo o contraseña incorrectos", sin indicar cuál falló. |
 | RF03 | Controlar acceso por rol | El sistema debe distinguir administrador y cliente, y solo el administrador gestiona destinos y paquetes. | Alta | Un cliente que intenta entrar a una opción de administración recibe "No tienes permiso para esta acción". |
-| RF04 | Registrar destino | El administrador debe poder registrar un destino con nombre, país, descripción y costo. | Alta | El destino aparece en el listado; no se acepta nombre vacío o repetido ni costo menor o igual a 0. |
+| RF04 | Registrar destino | El administrador debe poder registrar un destino con nombre, país y descripción. Los destinos no tienen precio porque no se venden sueltos. | Alta | El destino aparece en el listado; no se acepta nombre o país vacío, con caracteres no permitidos, ni un destino repetido (mismo nombre y país, sin importar mayúsculas). |
 | RF05 | Modificar destino | El administrador debe poder cambiar los datos de un destino. | Alta | Los cambios se ven en el listado, con las validaciones de RF04. |
-| RF06 | Eliminar destino | El administrador debe poder eliminar un destino. | Alta | El destino desaparece del listado; si está en un paquete, no se elimina y se avisa "El destino está incluido en un paquete". |
-| RF07 | Listar destinos | El sistema debe mostrar los destinos disponibles. | Alta | Se listan nombre, país, descripción y costo de cada destino. |
-| RF08 | Crear paquete turístico | El administrador debe poder crear un paquete combinando uno o más destinos, con nombre, fecha de inicio, fecha de término y cupos. | Alta | El paquete queda guardado con sus destinos; no se acepta sin destinos, con término anterior al inicio ni con cupos menores a 1. |
-| RF09 | Calcular costo del paquete | El sistema debe calcular el costo del paquete sumando el costo de sus destinos. | Alta | Un paquete con destinos de $100.000 y $50.000 muestra $150.000. |
-| RF10 | Consultar disponibilidad | El sistema debe mostrar los paquetes con cupos libres y fecha de inicio futura. | Alta | Un paquete sin cupos o ya iniciado no aparece como disponible. |
-| RF11 | Reservar paquete | Un cliente con sesión iniciada debe poder reservar un paquete disponible indicando la cantidad de personas. | Alta | La reserva se guarda con su costo total y se descuentan los cupos; si no alcanzan se muestra "No hay cupos suficientes". |
+| RF06 | Eliminar o retirar destino | El administrador debe poder eliminar un destino. Si está incluido en algún paquete, se retira en vez de borrarse. | Alta | Un destino nunca usado desaparece; uno usado en un paquete queda "Retirado", deja de listarse como disponible y los paquetes y reservas anteriores lo conservan. Un destino retirado se puede reactivar. |
+| RF07 | Listar destinos | El sistema debe mostrar los destinos activos y, a pedido, también los retirados. | Alta | Se listan id, nombre, país, estado y descripción de cada destino. |
+| RF08 | Crear paquete turístico | El administrador debe poder crear un paquete con nombre, precio fijo por persona y al menos dos destinos activos en un orden de visita. | Alta | El paquete queda guardado con su itinerario ordenado; no se acepta con menos de dos destinos, con un destino retirado ni con precio menor o igual a 0. |
+| RF09 | Programar salidas | El administrador debe poder ofrecer un paquete en distintas fechas, cada una con sus propios cupos. | Alta | Cada salida tiene fecha de inicio, término posterior y cupos ≥ 1; no se repite la fecha de inicio para el mismo paquete. |
+| RF10 | Consultar disponibilidad | El sistema debe mostrar las salidas con fecha de inicio futura, su precio y sus cupos disponibles. | Alta | Los cupos disponibles se calculan como cupos totales menos pasajeros de reservas confirmadas; una salida sin cupos o ya iniciada no aparece como disponible. |
+| RF11 | Reservar salida | Un cliente con sesión iniciada debe poder reservar una salida para uno o varios pasajeros (nombre y documento). | Alta | La reserva guarda el precio contratado y sus pasajeros; si los cupos no alcanzan se muestra "No hay cupos suficientes" y no se guarda nada. |
 | RF12 | Consultar historial de reservas | El cliente debe poder ver todas sus reservas. | Alta | El cliente ve solo sus reservas, con paquete, fechas, personas, costo y estado. |
 | RF13 | Modificar y eliminar paquete | El administrador debe poder cambiar o eliminar un paquete. | Media | Los cambios se guardan; un paquete con reservas confirmadas no se puede eliminar. |
-| RF14 | Cancelar reserva | El cliente debe poder cancelar una reserva propia. | Baja | La reserva queda "cancelada" y los cupos vuelven al paquete. |
+| RF14 | Cancelar reserva | El cliente debe poder cancelar una reserva propia. | Baja | La reserva queda "cancelada" (no se borra) y sus pasajeros dejan de ocupar cupos. |
 | RF15 | Cerrar sesión | El usuario debe poder terminar su sesión. | Baja | Tras cerrar sesión, una opción protegida pide iniciar sesión de nuevo. |
+| RF16 | Registrar avance del viaje | El administrador debe registrar, por pasajero, el inicio y el término de cada etapa del itinerario. | Media | Cada avance guarda etapa, fechas y administrador responsable; se puede consultar qué etapas completó un pasajero y cuál cursa. |
+| RF17 | Consultar pasajeros | La agencia debe consultar pasajeros por paquete, período y estado (pendiente, viajando o finalizado). | Media | La consulta del período de 2026 de "Ruta del Vino" con los datos de ejemplo devuelve 5 pasajeros. |
 
 ## Requerimientos no funcionales
 
@@ -44,6 +46,8 @@ Cada requerimiento tiene identificador, prioridad y criterio de aceptación (una
 
 ## Supuestos de esta versión
 
-- Una reserva puede ser para varias personas; el costo de un destino es por persona.
+- Una reserva puede ser para varios pasajeros; cada pasajero ocupa un cupo.
+- El precio es por persona, fijo para cada paquete, y la reserva guarda el precio contratado.
+- Los destinos no se venden sueltos, por eso no tienen precio.
 - El primer administrador se crea con un script interno, porque el registro público solo crea clientes.
 - Los montos se guardan en pesos chilenos enteros, sin decimales.
