@@ -25,3 +25,18 @@ def resolve_path(value):
 
 
 SQLITE_PATH = resolve_path(os.getenv("SQLITE_PATH", "viajes_aventura.db"))
+
+MYSQL_SETTINGS = {
+    "host": os.getenv("MYSQL_HOST", "localhost"),
+    "port": int(os.getenv("MYSQL_PORT", "3306")),
+    "user": os.getenv("MYSQL_USER", ""),
+    "password": os.getenv("MYSQL_PASSWORD", ""),
+    "database": os.getenv("MYSQL_DATABASE", "viajes_aventura"),
+}
+
+# First administrator: created at start-up when the database has no admin yet.
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+
+# Password given to every user of the sample data (python init_db.py --seed).
+SEED_PASSWORD = os.getenv("SEED_PASSWORD", "")
